@@ -24,24 +24,6 @@ class TkHController extends AbstractController
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     #[Route('/tkh', name: 'app_tk_h')]
     public function index(): JsonResponse
     {
@@ -50,6 +32,21 @@ class TkHController extends AbstractController
             'path' => 'src/Controller/TkHController.php',
         ]);
     }
+
+
+    #[Route('/get_list_lot', name: 'get_lot', methods: 'GET')]
+    public  function getlistlot(): JsonResponse
+    {
+//$ddee = $this->manager->getRepository(ZtinmmTkH::class)->createQueryBuilder('h')->select('h', 'h.BukrsID');
+        $ddee = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql();
+
+dd($ddee);//
+//
+
+        return $this->json(  $ddee        );
+    }
+
+
 
     #[Route('/set_tk_h', name: 'set_tkh', methods: 'POST')]
     public function set_tk_h(Request $request): JsonResponse

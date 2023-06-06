@@ -25,7 +25,7 @@ class ZtinmmTkH
     private Collection $zinmmSofLotHs;
 
     #[ORM\ManyToOne(inversedBy: 'ztinmmTkHsid')]
-    private ?T001 $BukrsID = null;
+    private ?T001 $bukrsID = null;
 
     public function __construct()
     {
@@ -93,12 +93,12 @@ class ZtinmmTkH
 
     public function getBukrsID(): ?T001
     {
-        return $this->BukrsID;
+        return $this->bukrsID;
     }
 
-    public function setBukrsID(?T001 $BukrsID): self
+    public function setBukrsID(?T001 $bukrsID): self
     {
-        $this->BukrsID = $BukrsID;
+        $this->bukrsID = $bukrsID;
 
         return $this;
     }

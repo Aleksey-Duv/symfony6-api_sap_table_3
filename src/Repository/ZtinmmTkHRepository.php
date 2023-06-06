@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ZtinmmTkH;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -48,4 +49,37 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
         return $this->findBy([], ['konkurs_nr' => Criteria::ASC]);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
+    public  function getHeadSql()
+    {
+        $em = $this->getEntityManager();
+        $ret = $em->createQuery(
+            'select h ,b
+            from App\Entity\ZtinmmTkH h
+            left join h.bukrsID b
+           '
+        );
+        return $ret->getArrayResult();
+
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public  function getHeadQb()
+    {
+
+
+        return $this->createQueryBuilder('h')
+     //       ->leftJoin('t001','t', '','')
+            ->andWhere('h.konkurs_id = :val')
+            ->setParameter('val', 2)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+
+    }
 }
