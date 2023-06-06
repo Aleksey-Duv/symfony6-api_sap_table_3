@@ -5,6 +5,7 @@ namespace App\Controller;
 //use App\Entity\User;
 use App\Entity\ZinmmSofLotH;
 use App\Entity\ZtinmmTkH;
+use App\Repository\ZtinmmTkHRepository;
 use App\Servise\KonkursServise;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +29,7 @@ class TkHController extends AbstractController
     #[Route('/tkh', name: 'app_tk_h')]
     public function index(): JsonResponse
     {
-        $eee = new KonkursServise();
+        $eee = new KonkursServise($this->manager->getRepository(ZtinmmTkH::class));
 
 
         return $this->json([
