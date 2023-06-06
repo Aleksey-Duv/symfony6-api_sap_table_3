@@ -5,6 +5,7 @@ namespace App\Controller;
 //use App\Entity\User;
 use App\Entity\ZinmmSofLotH;
 use App\Entity\ZtinmmTkH;
+use App\Servise\KonkursServise;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,6 +28,9 @@ class TkHController extends AbstractController
     #[Route('/tkh', name: 'app_tk_h')]
     public function index(): JsonResponse
     {
+        $eee = new KonkursServise();
+
+
         return $this->json([
             'message' => 'Welcome to your new controller! test serv',
             'path' => 'src/Controller/TkHController.php',
