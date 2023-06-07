@@ -49,10 +49,10 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
         return $this->findBy([], ['konkurs_nr' => Criteria::ASC]);
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public  function getHeadSql()
+//    /**
+//     * @return ZtinmmTkH[]
+//     */
+    public  function getHeadDql(): array
     {
         $em = $this->getEntityManager();
         $ret = $em->createQuery(
@@ -61,7 +61,7 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
             left join h.bukrsID b
            '
         );
-        return $ret->getArrayResult();
+        return $ret->getArrayResult(  );
 
     }
 

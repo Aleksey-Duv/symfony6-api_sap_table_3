@@ -29,23 +29,38 @@ class TkHController extends AbstractController
     #[Route('/tkh', name: 'app_tk_h')]
     public function index(): JsonResponse
     {
-        $eee = new KonkursServise($this->manager->getRepository(ZtinmmTkH::class));
+        $eee = new KonkursServise(  );
+        $rtt = $eee->getHeadList1($this->manager);
 
+//dd($rtt);
+        return new JsonResponse($rtt)  ;
+      //  return $this->json(
+//            [
+//            'message' => 'Welcome to your new controller! test serv',
+//            'path' => 'src/Controller/TkHController.php',
+//        ]
+//        );
+    }
+    #[Route('/tkh1', name: 'app_tk_h1')]
+    public function index1(): JsonResponse
+    {
+        $eee = new KonkursServise(  );
+        $rtt = $eee->getHeadList1($this->manager);
 
-        return $this->json([
-            'message' => 'Welcome to your new controller! test serv',
-            'path' => 'src/Controller/TkHController.php',
-        ]);
+//dd($rtt);
+        return new JsonResponse($rtt)  ;
+
     }
 
 
     #[Route('/get_list_lot', name: 'get_lot', methods: 'GET')]
     public  function getlistlot(): JsonResponse
     {
+
 //$ddee = $this->manager->getRepository(ZtinmmTkH::class)->createQueryBuilder('h')->select('h', 'h.BukrsID');
         $ddee = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql();
 
-dd($ddee);//
+dump($ddee);//
 //
 
         return $this->json(  $ddee        );
