@@ -4,12 +4,8 @@ namespace App\Servise;
 
 use App\Entity\BookCategory;
 use App\Entity\ZtinmmTkH;
-use App\Model\BookCategory as BookCategoryModel;
-use App\Model\KonkursItem;
-use App\Model\KonkursModel;
-use App\Repository\ZtinmmTkHRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
+
 
 
 class KonkursServise
@@ -22,10 +18,9 @@ class KonkursServise
     }
 
 
-    public function getHeadList1(entityManagerInterface $manager): array
+    public function getHeadList(entityManagerInterface $manager): array
     {
-        $itemList = $manager->getRepository(ZtinmmTkH::class)->getHeadDql();
-
+        $itemList = $manager->getRepository(ZtinmmTkH::class)->getHeadDql(2);
 
 //        $items = array_map(
 //            fn (ZtinmmTkH $tkh) => new KonkursItem(

@@ -6,6 +6,7 @@ use App\Repository\ZtinmmTkHRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ZtinmmTkHRepository::class)]
 class ZtinmmTkH
@@ -13,18 +14,23 @@ class ZtinmmTkH
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+#[Groups('gr1')]
     private ?int $konkurs_id = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups('gr1')]
     private ?string $konkurs_nr = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('gr1')]
     private ?string $konkurs_name = null;
 
     #[ORM\OneToMany(mappedBy: 'konkurs_idd', targetEntity: ZinmmSofLotH::class)]
+    #[Groups('gr1')]
     private Collection $zinmmSofLotHs;
 
     #[ORM\ManyToOne(inversedBy: 'ztinmmTkHsid')]
+    #[Groups('gr1')]
     private ?T001 $bukrsID = null;
 
     public function __construct()

@@ -2,22 +2,23 @@
 
 namespace App\Controller;
 
-//use App\Entity\User;
 use App\Entity\ZinmmSofLotH;
 use App\Entity\ZtinmmTkH;
-use App\Repository\ZtinmmTkHRepository;
-use App\Servise\KonkursServise;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-//use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class TkHController extends AbstractController
 {
 //    private $request;
-    private $manager;
+    private EntityManagerInterface $manager;
 
     public function __construct(entityManagerInterface $manager)
     {
@@ -26,30 +27,82 @@ class TkHController extends AbstractController
     }
 
 
-    #[Route('/tkh', name: 'app_tk_h')]
-    public function index(): JsonResponse
+    #[Route('/tkh_findAll', name: 'app_findAll')]
+    public function index_findAll(SerializerInterface $serializer): JsonResponse
     {
-        $eee = new KonkursServise(  );
-        $rtt = $eee->getHeadList1($this->manager);
 
-//dd($rtt);
-        return new JsonResponse($rtt)  ;
-      //  return $this->json(
-//            [
-//            'message' => 'Welcome to your new controller! test serv',
-//            'path' => 'src/Controller/TkHController.php',
-//        ]
-//        );
+
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->find(2);
+
+       $fg = $serializer->serialize($item_tkh,'json', ['groups' => ['gr1']]);
+
+        return  JsonResponse::fromJsonString($fg)  ;
     }
-    #[Route('/tkh1', name: 'app_tk_h1')]
-    public function index1(): JsonResponse
+
+//// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
+    #[Route('/tkh_dql1', name: 'app_dql1_h')]
+    public function index_dql1(): JsonResponse
     {
-        $eee = new KonkursServise(  );
-        $rtt = $eee->getHeadList1($this->manager);
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql('1240');
+
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $productLis = $serializer->deserialize($item_tkh,'json',ZtinmmTkH::class);
+
+        return new JsonResponse($item_tkh)  ;
+    }
+    #[Route('/tkh_dql2', name: 'app_dql2_h')]
+    public function index_dql2(): JsonResponse
+    {
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql_all();
+
+        return new JsonResponse($item_tkh)  ;
+    }
+    #[Route('/tkh_dql3', name: 'app_dql3_h')]
+    public function index_dql3(): JsonResponse
+    {
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql1(1241);
+     //   return $this->jsonEncode($item_tkh)  ;
+        return new JsonResponse($item_tkh)  ;
+    }
+    //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
+    //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
+    #[Route('/tkh_sql1', name: 'app_sql1_h1')]
+    public function index_sql1(): JsonResponse
+    {
+        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql1();
+        return new JsonResponse($itemList)  ;
+    }
+    #[Route('/tkh_sql2', name: 'app_sql2_h1')]
+    public function index_sql2(): JsonResponse
+    {
+        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql2(1241);
+        return new JsonResponse($itemList)  ;
+    }
+    //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
+    #[Route('/tkh2', name: 'app_tk_h2')]
+    public function index2( ): JsonResponse //SerializerInterface $serializer
+    {
+        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb();
+
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $productListJSON = $serializer->serialize($itemList, 'json');
+        dd($productListJSON);
+
+     //   return $this->json($productListJSON);
+
+
 
 //dd($rtt);
-        return new JsonResponse($rtt)  ;
-
+        return new JsonResponse($itemList)  ;
+      //  $rrr = $serializer->serialize($itemList,'json');
+       // $rrr = $serializer->
+       // return  $this->json(  $itemList );;
     }
 
 
