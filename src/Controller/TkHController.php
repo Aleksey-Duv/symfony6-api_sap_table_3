@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -83,26 +84,19 @@ class TkHController extends AbstractController
     }
     //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
     #[Route('/tkh2', name: 'app_tk_h2')]
-    public function index2( ): JsonResponse //SerializerInterface $serializer
+    public function index2(SerializerInterface $serializer ): JsonResponse //SerializerInterface $serializer
     {
+
+
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb();
 
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
+        $context = (new ObjectNormalizerContextBuilder())
+            ->withGroups('gr1')
+            ->toArray();
 
-        $productListJSON = $serializer->serialize($itemList, 'json');
-        dd($productListJSON);
+        $fg = $serializer->serialize($itemList,'json', $context);
 
-     //   return $this->json($productListJSON);
-
-
-
-//dd($rtt);
-        return new JsonResponse($itemList)  ;
-      //  $rrr = $serializer->serialize($itemList,'json');
-       // $rrr = $serializer->
-       // return  $this->json(  $itemList );;
+        return  JsonResponse::fromJsonString($fg)  ;
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\T001;
 use App\Entity\ZtinmmTkH;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
@@ -129,19 +130,25 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
     }
 //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
 //// QueryBuilder///////////////////////////////////////////////////////////////////////QueryBuilder/////////////////////////////////////////////////////
-    /**
-     * @throws NonUniqueResultException
-     */
+//    /**
+//     * @return  ZtinmmTkH[]
+//     */
     public  function getHeadQb():array
     {
 
-        return $this->createQueryBuilder('h')
-          //  ->andWhere('h.konkurs_id = :val')
-          //  ->setParameter('val', 2)
+        $fff = $this->createQueryBuilder('h')
+            ->select( 'h' )
+           // ->from('App:ZtinmmTkH','h')
+            //->leftJoin('h.zinmmSofLotHs','lot','','',''  )
+
+            ->Where('h.konkurs_id = :val')
+            ->setParameter('val', 2)
             ->getQuery()
-            ->execute() //getOneOrNullResult()
+           // ->execute() //getOneOrNullResult()
         ;
 
+    //    echo $fff->getDQL();
+        return $fff->getResult() ;
     }
 
     public  function getHeadQ():array
