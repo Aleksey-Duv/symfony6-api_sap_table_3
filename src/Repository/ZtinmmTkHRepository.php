@@ -43,16 +43,12 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-//     * @return ZtinmmTkH[]
-     * @method ZtinmmTkH|null
-     */
     public function findAllSortedByKonkurs(): array
     {
         return $this->findBy([], ['konkurs_nr' => Criteria::ASC]);
     }
 //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
-    public  function getHeadDql_all(): array //Обьеденение 3 таблиц, групировка, получение количества лотов, вывод всех записей, с сортировкой
+    public  function getHeadDql_all($maxResults): array //Обьеденение 3 таблиц, групировка, получение количества лотов, вывод всех записей, с сортировкой
     {
         $em = $this->getEntityManager();
         $ret = $em->createQuery(
@@ -64,22 +60,27 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
             order by h.konkurs_id desc
            '
         );
+
+        $ret->setFirstResult(0)->setMaxResults( $maxResults);
+
         return $ret->getArrayResult();
     }
-    public  function getHeadDql($bukrs): array//Обьеденение 2 таблиц, получение количества лотов, вывод  записей по bukrs, с сортировкой
+    public  function getHeadDql($bukrs, $maxResults): array//Обьеденение 2 таблиц, получение количества лотов, вывод  записей по bukrs, с сортировкой
     {
         $em = $this->getEntityManager();
         $ret = $em->createQuery(
             'select h, b
             from App\Entity\ZtinmmTkH h
             inner join h.bukrsID b
-            where b.bukrs = :bukrs
+            where b.bukrs = :bukrs 
             order by h.konkurs_id desc
            '
-        )->setParameter('bukrs', $bukrs);
+        )->setParameter('bukrs', $bukrs)
+        ->setFirstResult(0)->setMaxResults($maxResults);
+        echo $ret->getDQL();
         return $ret->getArrayResult();
     }
-    public  function getHeadDql1($bukrs): array//Обьеденение 3 таблиц, вывод  записей по bukrs, с сортировкой
+    public  function getHeadDql1($bukrs,$maxResults): array//Обьеденение 3 таблиц, вывод  записей по bukrs, с сортировкой
     {
         $em = $this->getEntityManager();
         $ret = $em->createQuery(
@@ -90,7 +91,8 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
             where b.bukrs = :bukrs
             order by h.konkurs_id desc
            '
-        )->setParameter('bukrs', $bukrs);
+        )->setParameter('bukrs', $bukrs)
+            ->setFirstResult(0)->setMaxResults($maxResults);;
         return $ret->getArrayResult();
     }
 //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
@@ -130,36 +132,27 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
     }
 //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
 //// QueryBuilder///////////////////////////////////////////////////////////////////////QueryBuilder/////////////////////////////////////////////////////
-//    /**
-//     * @return  ZtinmmTkH[]
-//     */
-    public  function getHeadQb():array
+    public  function getHeadQb($bukrs):array
     {
+        if (isset($bukrs) && $bukrs == '')
+        {
+            $bukrs = null;
+        }
 
         $fff = $this->createQueryBuilder('h')
-            ->select( 'h' )
-           // ->from('App:ZtinmmTkH','h')
-            //->leftJoin('h.zinmmSofLotHs','lot','','',''  )
-
-            ->Where('h.konkurs_id = :val')
-            ->setParameter('val', 2)
+            ->select( 'h, lot, b' )
+            ->leftJoin('h.zinmmSofLotHs','lot' )
+            ->leftJoin('h.bukrsID','b' )
+            ->Where('b.bukrs = :bukrs')
+            ->orWhere(':bukrs is null')
+            ->setParameter('bukrs', $bukrs)
             ->getQuery()
-           // ->execute() //getOneOrNullResult()
+
         ;
 
-    //    echo $fff->getDQL();
-        return $fff->getResult() ;
+        echo $fff->getDQL();
+        return $fff->getArrayResult() ;
     }
 
-    public  function getHeadQ():array
-    {
-//        $this->getEntityManager()->createQuery(
-//
-//        )->setParameter();
-
-
-        return ''   ;
-
-    }
 
 }

@@ -35,60 +35,79 @@ class TkHController extends AbstractController
 
         $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->find(2);
 
+
        $fg = $serializer->serialize($item_tkh,'json', ['groups' => ['gr1']]);
 
         return  JsonResponse::fromJsonString($fg)  ;
     }
 
 //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
-    #[Route('/tkh_dql1', name: 'app_dql1_h')]
-    public function index_dql1(): JsonResponse
+    #[Route('/tkh_dql1', name: 'app_dql1_h', methods: 'GET')]
+    public function index_dql1(Request $request): JsonResponse
     {
-        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql('1240');
+//        for Postman body JSON
+//        {
+//            "bukrs": "1241",
+//           "maxResults": "4"
+//       }
+        $data = json_decode($request->getContent(), true);
+        $bukrs = $data['bukrs'];
+        $maxResults = $data['maxResults'];
 
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $productLis = $serializer->deserialize($item_tkh,'json',ZtinmmTkH::class);
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql($bukrs, $maxResults);
 
         return new JsonResponse($item_tkh)  ;
     }
-    #[Route('/tkh_dql2', name: 'app_dql2_h')]
-    public function index_dql2(): JsonResponse
+    #[Route('/tkh_dql2', name: 'app_dql2_h', methods: 'GET')]
+    public function index_dql2(Request $request): JsonResponse
     {
-        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql_all();
+        $data = json_decode($request->getContent(), true);
+        $maxResults = $data['maxResults'];
+
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql_all($maxResults);
+
 
         return new JsonResponse($item_tkh)  ;
     }
-    #[Route('/tkh_dql3', name: 'app_dql3_h')]
-    public function index_dql3(): JsonResponse
+    #[Route('/tkh_dql3', name: 'app_dql3_h', methods: 'GET')]
+    public function index_dql3(Request $request): JsonResponse
     {
-        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql1(1241);
+//        {
+//            "bukrs": "1241",
+//           "maxResults": "4"
+//       }
+        $data = json_decode($request->getContent(), true);
+        $bukrs = $data['bukrs'];
+        $maxResults = $data['maxResults'];
+
+        $item_tkh = $this->manager->getRepository(ZtinmmTkH::class)->getHeadDql1($bukrs,$maxResults);
      //   return $this->jsonEncode($item_tkh)  ;
         return new JsonResponse($item_tkh)  ;
     }
     //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
     //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
-    #[Route('/tkh_sql1', name: 'app_sql1_h1')]
+    #[Route('/tkh_sql1', name: 'app_sql1_h1', methods: 'GET')]
     public function index_sql1(): JsonResponse
     {
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql1();
         return new JsonResponse($itemList)  ;
     }
-    #[Route('/tkh_sql2', name: 'app_sql2_h1')]
+    #[Route('/tkh_sql2', name: 'app_sql2_h1', methods: 'GET')]
     public function index_sql2(): JsonResponse
     {
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql2(1241);
         return new JsonResponse($itemList)  ;
     }
     //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
-    #[Route('/tkh2', name: 'app_tk_h2')]
-    public function index2(SerializerInterface $serializer ): JsonResponse //SerializerInterface $serializer
+    #[Route('/tkh2', name: 'app_tk_h2', methods: 'GET')]
+    public function index2(SerializerInterface $serializer ,Request $request): JsonResponse //SerializerInterface $serializer
     {
+        $data = json_decode($request->getContent(), true);
 
+        $bukrs =  $data['bukrs'];
+       // $maxResults = $data['maxResults'];
 
-        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb();
+        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb($bukrs);
 
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups('gr1')
