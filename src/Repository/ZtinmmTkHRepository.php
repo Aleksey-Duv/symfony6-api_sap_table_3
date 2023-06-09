@@ -77,7 +77,7 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
            '
         )->setParameter('bukrs', $bukrs)
         ->setFirstResult(0)->setMaxResults($maxResults);
-        echo $ret->getDQL();
+      //  echo $ret->getDQL();
         return $ret->getArrayResult();
     }
     public  function getHeadDql1($bukrs,$maxResults): array//Обьеденение 3 таблиц, вывод  записей по bukrs, с сортировкой
@@ -118,11 +118,17 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
      */
     public  function getHeadSql2($bukrs): array
     {
+        if (isset($bukrs) && $bukrs == '')
+        {
+            $bukrs = null;
+        }
+
         $conn = $this->getEntityManager()->getConnection();//Обьеденение 3 таблиц, вывод  записей по bukrs, с сортировкой,получение количества лотов
-        $sql = 'SELECT h.konkurs_id, h.konkurs_nr,h.konkurs_name, t.bukrs, t.butxt, count( lot_id ) lotCountSQL FROM ztinmm_tk_h h
+        $sql = 'SELECT h.konkurs_id, h.konkurs_nr,h.konkurs_name, t.bukrs, t.butxt, count( lot_id ) lotCountSQL 
+                    FROM ztinmm_tk_h h
                     INNER JOIN t001 t on h.bukrs_id_id = t.id
                     LEFT JOIN zinmm_sof_lot_h lot on h.konkurs_id = lot.konkurs_id
-                    WHERE  t.bukrs = :bukrs
+                    WHERE  t.bukrs = :bukrs OR :bukrs is null
                 GROUP BY h.konkurs_id, h.konkurs_nr,h.konkurs_name, t.bukrs, t.butxt
                 ORDER BY h.konkurs_id DESC 
         ';
@@ -149,8 +155,9 @@ class ZtinmmTkHRepository extends ServiceEntityRepository
             ->getQuery()
 
         ;
+        //$fff->setMaxResults(2);
 
-        echo $fff->getDQL();
+       // echo $fff->getDQL();
         return $fff->getArrayResult() ;
     }
 

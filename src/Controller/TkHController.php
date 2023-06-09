@@ -87,18 +87,22 @@ class TkHController extends AbstractController
     //// DQL///////////////////////////////////////////////////////////////////////DQL/////////////////////////////////////////////////////
     //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
     #[Route('/tkh_sql1', name: 'app_sql1_h1', methods: 'GET')]
-    public function index_sql1(): JsonResponse
+    public function index_sql1(Request $request): JsonResponse
     {
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql1();
         return new JsonResponse($itemList)  ;
     }
     #[Route('/tkh_sql2', name: 'app_sql2_h1', methods: 'GET')]
-    public function index_sql2(): JsonResponse
+    public function index_sql2(Request $request): JsonResponse
     {
-        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql2(1241);
+        $data = json_decode($request->getContent(), true);
+        $bukrs = $data['bukrs'];
+
+        $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadSql2($bukrs);
         return new JsonResponse($itemList)  ;
     }
     //// SQL///////////////////////////////////////////////////////////////////////SQL/////////////////////////////////////////////////////
+    //// QueryBuilder///////////////////////////////////////////////////////////QueryBuilder/////////////////////////////////////////////////////
     #[Route('/tkh2', name: 'app_tk_h2', methods: 'GET')]
     public function index2(SerializerInterface $serializer ,Request $request): JsonResponse //SerializerInterface $serializer
     {
@@ -109,14 +113,42 @@ class TkHController extends AbstractController
 
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb($bukrs);
 
-        $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups('gr1')
-            ->toArray();
-
-        $fg = $serializer->serialize($itemList,'json', $context);
-
-        return  JsonResponse::fromJsonString($fg)  ;
+//        $context = (new ObjectNormalizerContextBuilder())
+//            ->withGroups('gr1')
+//            ->toArray();
+//
+//        $fg = $serializer->serialize($itemList,'json', $context);
+//
+//        return  JsonResponse::fromJsonString($fg)  ;
+        return new JsonResponse($itemList);
     }
+    //// QueryBuilder///////////////////////////////////////////////////////////QueryBuilder/////////////////////////////////////////////////////
+    ///
+    #[Route('/set_tkh_upd', name: 'set_tkh_upd', methods: 'POST')]
+    public function set_tkh_upd(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['konkurs_id'];
+        $konkurs_name = $data['konkurs_name'];
+
+        $Proc = $this->manager->getRepository(ZtinmmTkH::class)->find($id);
+
+        $Proc->setKonkursName($konkurs_name);
+
+        $this->manager->persist($Proc);
+        $this->manager->flush();
+
+        return new JsonResponse
+        (
+            [
+                'statys' => true,
+                'message' => 'Update'
+            ]
+        );
+
+
+    }
+
 
 
     #[Route('/get_list_lot', name: 'get_lot', methods: 'GET')]
