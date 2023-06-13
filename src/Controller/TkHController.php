@@ -112,6 +112,7 @@ class TkHController extends AbstractController
        // $maxResults = $data['maxResults'];
 
         $itemList = $this->manager->getRepository(ZtinmmTkH::class)->getHeadQb($bukrs);
+      //  $itemList->
 
 //        $context = (new ObjectNormalizerContextBuilder())
 //            ->withGroups('gr1')
